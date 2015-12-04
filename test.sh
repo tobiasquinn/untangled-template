@@ -1,6 +1,8 @@
+EXAMPLE_PROJECT=example-project
+
 cd ~/projects/untangled-template
-rm -r my-untangled-project
+rm -r $EXAMPLE_PROJECT
 lein install &&
-lein new untangled my-untangled-project -- :devcards :server &&
-cd my-untangled-project &&
+lein new untangled $EXAMPLE_PROJECT -- :devcards :server &&
+cd $EXAMPLE_PROJECT &&
 rlwrap lein run -m clojure.main
