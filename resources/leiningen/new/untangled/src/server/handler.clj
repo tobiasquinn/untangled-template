@@ -3,6 +3,7 @@
             [bidi.bidi :refer [match-route]]
             [ring.util.response :refer [resource-response]]
             [ring.middleware.resource :refer [wrap-resource]]
+            [ring.middleware.cors :refer [wrap-cors]]
             ))
 
 (def routes
@@ -38,6 +39,8 @@
 (defn make-handler [routes]
   (-> routes
       make-route-handler
+      (wrap-cors :access-control-allow-origin [#".*localhost.*"]
+                 :access-control-allow-methods [:get :post])
       (wrap-resource "public")))
 
 (defrecord Handler [value]

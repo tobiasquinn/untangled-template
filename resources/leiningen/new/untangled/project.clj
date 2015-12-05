@@ -13,13 +13,14 @@
                  {{#when-server}}
                  [org.clojure/tools.namespace "0.2.10"]
                  [ring/ring-core "1.4.0"]
+                 [ring-cors "0.1.7"]
                  [http-kit "2.1.18"]
-                 [bidi "1.21.1"]
-                 {{/when-server}}
-                 ]
+                 [bidi "1.21.1"]{{/when-server}}]
+  {{#when-server}}
 
   :source-paths ["src/server"]
 
+  {{/when-server}}
   :clean-targets ^{:protect false} ["target" "resources/public/js"]
 
   :figwheel {:build-ids ["dev"]}

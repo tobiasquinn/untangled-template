@@ -18,16 +18,20 @@
 
 (defn server-files [opts]
   (if-not (:server opts) []
-    [["src/server/{{sanitized}}/system.clj"  "src/server/system.clj"]
-     ["src/server/{{sanitized}}/config.clj"  "src/server/config.clj"]
-     ["src/server/{{sanitized}}/handler.clj" "src/server/handler.clj"]
-     ["src/server/{{sanitized}}/server.clj"  "src/server/server.clj"]]))
+    [;server
+     ["src/server/{{sanitized}}/system.clj"   "src/server/system.clj"]
+     ["src/server/{{sanitized}}/config.clj"   "src/server/config.clj"]
+     ["src/server/{{sanitized}}/handler.clj"  "src/server/handler.clj"]
+     ["src/server/{{sanitized}}/server.clj"   "src/server/server.clj"]
+     ;client
+     ["src/client/{{sanitized}}/network.cljs" "src/client/network.cljs"]]))
 
 (defn client-files [opts]
   [["resources/public/index.html"          "resources/index.html"]
    ["src/client/{{sanitized}}/core.cljs"   "src/client/core.cljs"]
    ["src/client/{{sanitized}}/ui.cljs"     "src/client/ui.cljs"]
-   ["src/client/{{sanitized}}/parser.cljs" "src/client/parser.cljs"]])
+   ["src/client/{{sanitized}}/parser.cljs" "src/client/parser.cljs"]
+   ["src/client/{{sanitized}}/utils.cljs" "src/client/utils.cljs"]])
 
 (defn devcard-files [opts]
   (if-not (:devcards opts) []
@@ -55,8 +59,11 @@
 (defn make-data [project-name opts]
   {:name          project-name
    :sanitized     (template/name-to-path project-name)
-   :when-devcards #(when (:devcards opts) %)
-   :when-server   #(when (:server   opts) %)
+
+   ;; LAMBDAS
+   :when-devcards   #(when (:devcards opts) %)
+   :when-server     #(when (:server   opts) %)
+   :when-not-server #(when-not (:server opts) %)
    })
 
 (defn untangled
