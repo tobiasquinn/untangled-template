@@ -23,7 +23,7 @@
 (defn api [req]
   (try
     (println "API Received " req)
-    (gen-res {:res :api, :req req})
+    (gen-res {:res :api})
     (catch Exception e
       (println "API error:" e)
       (gen-res {:cthulhu :angry}))))
