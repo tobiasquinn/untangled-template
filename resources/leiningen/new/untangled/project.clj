@@ -47,11 +47,21 @@
                         :figwheel true
                         :source-paths ["src/client" "dev/client"]
                         :compiler {:main                 cljs.user
-                                   :asset-path           "js/compiled/dev"
                                    :output-to            "resources/public/js/compiled/client.js"
                                    :output-dir           "resources/public/js/compiled/dev"
-                                   :recompile-dependents true
-                                   :verbose              false}}
+                                   :asset-path           "js/compiled/dev"
+                                   :source-map-timestamp true
+                                   :optimizations        :none
+                                   }}
+
+                       {:id           "production"
+                        :source-paths ["src/client"]
+                        :compiler     {:main          {{name}}.main
+                                       :output-to     "resources/public/js/compiled/main.js"
+                                       :output-dir    "resources/public/js/compiled/prod"
+                                       :asset-path    "js/compiled/prod"
+                                       :optimizations :none
+                                       }}
 
                        {:id           "test"
                         :source-paths ["specs/client" "src/client"]
@@ -60,7 +70,6 @@
                                        :output-to            "resources/public/js/specs/specs.js"
                                        :output-dir           "resources/public/js/compiled/specs"
                                        :asset-path           "js/compiled/specs"
-                                       :recompile-dependents true
                                        :optimizations        :none}}
 
                        {{#when-devcards}}
@@ -68,13 +77,12 @@
                         :figwheel     {:devcards true}
                         :source-paths ["src/client" "src/cards"]
                         :compiler     {:main                 {{name}}.cards
-                                       :asset-path           "js/compiled/cards"
                                        :output-to            "resources/public/js/compiled/cards.js"
                                        :output-dir           "resources/public/js/compiled/cards"
+                                       :asset-path           "js/compiled/cards"
                                        :optimizations        :none
-                                       :recompile-dependents true
                                        :source-map-timestamp true
-                                       :verbose              false}}
+                                       }}
                        {{/when-devcards}}
                        ]}
 

@@ -10,6 +10,7 @@
 
  :client ^:always {"resources/index.html"            "resources/public/index.html"
                    "src/client/core.cljs"            "src/client/{{sanitized}}/core.cljs"
+                   "src/client/main.cljs"            "src/client/{{sanitized}}/main.cljs"
                    "src/client/initial_state.cljs"   "src/client/{{sanitized}}/initial_state.cljs"
                    "src/client/state/mutations.cljs" "src/client/{{sanitized}}/state/mutations.cljs"
                    "src/client/ui/root.cljs"         "src/client/{{sanitized}}/ui/root.cljs"}
