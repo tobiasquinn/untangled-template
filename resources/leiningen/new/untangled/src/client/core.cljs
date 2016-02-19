@@ -1,26 +1,14 @@
 (ns {{name}}.core
-  (:require [goog.dom :as gdom]
-            [om.next :as om]
+  (:require [om.next :as om]
+            [untangled.client.core :as uc]
 
-            [{{name}}.ui :as ui]
-            [{{name}}.parser :as p]
-            {{#when-server}}
-            [{{name}}.network :as net]
-            {{/when-server}}
+            {{name}}.state.mutations ;; DO NOT DELETE, loads {{name}}'s mutations
+            [{{name}}.initial-state :refer [initial-state]]
             ))
 
-(enable-console-print!)
-
-(def initial-state {:hello "World!"})
-
-(def parser (om/parser {:read p/read-entry-point}))
-
-(def reconciler (om/reconciler {:state initial-state
-                                :parser parser
-                                {{#when-server}}
-                                :send net/server-send
-                                :remotes [:server]
-                                {{/when-server}}
-                                }))
-
-(om/add-root! reconciler ui/Root (gdom/getElement "app"))
+(defonce app
+  (atom (uc/new-untangled-client
+          :initial-state initial-state
+          :started-callback (fn [{:keys [reconciler]}]
+                              ;;TODO: initial load of data
+                              ))))

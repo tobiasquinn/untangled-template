@@ -3,74 +3,41 @@
             [leiningen.core.main :as main]
             [stencil.parser :as p]
             [stencil.core :as s]
+            [clojure.edn]
             [clojure.string :refer [replace-first]]))
 
-(defn spy
-  ([x] (spy :spy x))
-  ([tag x] (println tag x) x))
+(def files (read-string (slurp "src/leiningen/new/files.edn")))
 
-(defn parse-args [args]
-  (reduce (fn [opts arg]
-            (as-> (replace-first arg #"^:" "") arg
-              (keyword arg)
-              (assoc opts arg true)))
-          {} args))
-
-(defn server-files [opts]
-  (if-not (:server opts) []
-    [;server
-     ["src/server/{{sanitized}}/system.clj"   "src/server/system.clj"]
-     ["src/server/{{sanitized}}/config.clj"   "src/server/config.clj"]
-     ["src/server/{{sanitized}}/handler.clj"  "src/server/handler.clj"]
-     ["src/server/{{sanitized}}/server.clj"   "src/server/server.clj"]
-     ;client
-     ["src/client/{{sanitized}}/network.cljs" "src/client/network.cljs"]]))
-
-(defn client-files [opts]
-  [["resources/public/index.html"          "resources/index.html"]
-   ["src/client/{{sanitized}}/core.cljs"   "src/client/core.cljs"]
-   ["src/client/{{sanitized}}/ui.cljs"     "src/client/ui.cljs"]
-   ["src/client/{{sanitized}}/parser.cljs" "src/client/parser.cljs"]
-   ["src/client/{{sanitized}}/utils.cljs" "src/client/utils.cljs"]])
-
-(defn devcard-files [opts]
-  (if-not (:devcards opts) []
-    [["src/cards/{{sanitized}}/cards.cljs" "src/cards/cards.cljs"]
-     ["src/cards/{{sanitized}}/intro.cljs" "src/cards/intro.cljs"]
-     ["resources/public/cards.html"        "resources/cards.html"]]))
-
-(defn dev-files [opts]
-  [["src/dev/user.clj" "src/dev/user.clj"]])
-
-(defn root-files [opts]
-  [["project.clj" "project.clj"]
-   ["README.md"   "README.md"]])
-
-(def files
-  [root-files dev-files devcard-files
-   client-files server-files])
-
-(defn render-files [files data]
-  (let [render #((template/renderer "untangled") % data)]
+(defn render-files [opts data]
+  (let [render #((template/renderer "untangled") % data)
+        tmpl (fn [files-map] (mapv (fn [[from to]] (vector to (render from))) files-map))]
     (->> files
-         (mapv #(update % 1 render))
+         (mapv (fn [[opt-name opt-files]]
+                 (if (some-> opt-files meta :always)
+                   (tmpl opt-files)
+                   (if-not (get opts opt-name) []
+                     (tmpl opt-files)))))
+         (apply concat)
          (apply template/->files data))))
 
 (defn make-data [project-name opts]
-  {:name          project-name
-   :sanitized     (template/name-to-path project-name)
-
-   ;; LAMBDAS
-   :when-devcards   #(when (:devcards opts) %)
-   :when-server     #(when (:server   opts) %)
-   :when-not-server #(when-not (:server opts) %)
-   })
+  (merge
+    ;; VARS
+    {:name          project-name
+     :sanitized     (template/name-to-path project-name)}
+    ;; LAMBDAS
+    {:when-devcards   #(when     (:devcards opts) %)
+     :when-server     #(when     (:server   opts) %)
+     :when-not-server #(when-not (:server opts)   %)}))
 
 (defn untangled
   "FIXME: write documentation"
   ([project-name & args]
-   (let [opts (parse-args args)]
+   (let [opts (reduce (fn [opts arg]
+                        (as-> (replace-first arg #"^:" "") arg
+                          (keyword arg)
+                          (assoc opts arg true)))
+                      {} args)]
      (main/info "Generating an untangled project.")
      (main/info (str "With opts: " opts))
-     (render-files (mapcat #(% opts) files)
-                   (make-data project-name opts)))))
+     (render-files opts (make-data project-name opts)))))
