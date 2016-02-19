@@ -2,13 +2,13 @@
   (:require
     [figwheel-sidecar.repl-api :as ra]
 
-    ;; utils for repl use
+    ;; utils for tinkering
     [clojure.pprint :refer [pprint]]
     [clojure.stacktrace :refer [print-stack-trace]]
-    [taoensso.timbre :as timbre]
     [clojure.java.io :as io]
 
     {{#when-server}}
+    [taoensso.timbre :as timbre]
     [clojure.tools.namespace.repl :refer [refresh set-refresh-dirs]]
     [com.stuartsierra.component :as component]
     [{{name}}.system :as sys]

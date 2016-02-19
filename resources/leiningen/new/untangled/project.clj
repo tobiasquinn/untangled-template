@@ -8,10 +8,10 @@
                  [untangled-client "0.4.3-SNAPSHOT"]
                  [untangled-spec "0.3.3" :scope "test"]
 
+                 {{#when-server}}
                  [com.stuartsierra/component "0.3.0"]
                  [com.taoensso/timbre "4.1.4"]
 
-                 {{#when-server}}
                  [navis/untangled-datomic "0.4.2-SNAPSHOT"]
                  [navis/untangled-server "0.4.3-SNAPSHOT"]
                  {{/when-server}}]
