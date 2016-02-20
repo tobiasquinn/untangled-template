@@ -2,8 +2,7 @@
   (:require
     [untangled.client.mutations :as mut]
     [om.dom :as dom]
-    [om.next :as om :refer-macros [defui]]
-    ))
+    [om.next :as om :refer-macros [defui]]))
 
 (defui ^:once Root
   static om/IQuery

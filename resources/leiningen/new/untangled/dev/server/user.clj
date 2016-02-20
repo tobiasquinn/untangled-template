@@ -2,7 +2,7 @@
   (:require
     [figwheel-sidecar.repl-api :as ra]
 
-    ;; utils for tinkering
+    ;; repl utils
     [clojure.pprint :refer [pprint]]
     [clojure.stacktrace :refer [print-stack-trace]]
     [clojure.java.io :as io]
@@ -11,9 +11,7 @@
     [taoensso.timbre :as timbre]
     [clojure.tools.namespace.repl :refer [refresh set-refresh-dirs]]
     [com.stuartsierra.component :as component]
-    [{{name}}.system :as sys]
-    {{/when-server}}
-    ))
+    [{{name}}.system :as sys]{{/when-server}}))
 
 ;; ==================== FIGWHEEL ====================
 
@@ -34,7 +32,6 @@
      (println "STARTING FIGWHEEL ON BUILDS: " build-ids)
      (ra/start-figwheel! (assoc figwheel-config :build-ids build-ids))
      (ra/cljs-repl))))
-
 {{#when-server}}
 ;; ==================== SERVER ====================
 (set-refresh-dirs "dev/server" "src/server" "specs/server")

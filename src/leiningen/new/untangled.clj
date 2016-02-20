@@ -3,15 +3,18 @@
     [leiningen.new.tmpl :as tmpl]
     [leiningen.new.templates :as template]
     [leiningen.core.main :as main]
+    [clojure.set :as set]
     [stencil.parser :as p]
     [stencil.core :as s]
-    [clojure.edn]
     [clojure.string :refer [replace-first]]
     [clojure.java.io :as io]))
 
 (defn render-files [opts data]
   (let [render #((template/renderer "untangled") % data)
-        tmpl (fn [files-map] (mapv (fn [[from to]] (vector to (render from))) files-map))]
+        tmpl (fn [files-map]
+               (mapv (fn [[from to]]
+                       (vector to (render from)))
+                     files-map))]
     (->> tmpl/files
          (mapv (fn [[opt-name opt-files]]
                  (if (some-> opt-files meta :always)
@@ -21,23 +24,26 @@
          (apply concat)
          (apply template/->files data))))
 
-(defn make-data [project-name opts]
-  (merge
-    ;; VARS
-    {:name          project-name
-     :sanitized     (template/name-to-path project-name)}
-    ;; LAMBDAS
-    {:when-devcards   #(when     (:devcards opts) %)
-     :when-server     #(when     (:server   opts) %)
-     :when-not-server #(when-not (:server opts)   %)}))
+(defn parse-args [args]
+  (letfn [(parse [args]
+                 (reduce #(->> %2 read-string (conj %1)) #{} args))
+          (validate [opts args]
+                    (let [diff (set/difference args (set (keys opts)))]
+                      (assert (empty? diff) (str "invalid args: " diff)))
+                    args)
+          (expand [arg->opts args]
+                  (->> args
+                       (mapcat #(if-let [xs (arg->opts %)] xs [%]))
+                       set
+                       (reduce #(assoc %1 %2 true) {})))]
+    (->> (parse args)
+         (validate tmpl/opts)
+         (expand tmpl/opts))))
 
 (defn untangled
   [project-name & args]
-  (let [opts (reduce (fn [opts arg]
-                       (as-> (replace-first arg #"^:" "") arg
-                         (keyword arg)
-                         (assoc opts arg true)))
-                     {} args)]
+  (let [opts (parse-args args)]
     (main/info "Generating an untangled project.")
     (main/info (str "With opts: " opts))
-    (render-files opts (make-data project-name opts))))
+    (render-files opts (tmpl/make-data project-name opts))
+    (main/info "Done!")))

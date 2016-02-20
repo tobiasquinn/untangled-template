@@ -1,4 +1,20 @@
-(ns leiningen.new.tmpl)
+(ns leiningen.new.tmpl
+  (:require
+    [leiningen.new.templates :as template]))
+
+(defn make-data [project-name opts]
+  {;;VARS
+   :name      project-name
+   :sanitized (template/name-to-path project-name)
+   ;;LAMBDAS
+   :when-devcards   #(when     (:devcards opts) %)
+   :when-server     #(when     (:server   opts) %)
+   :when-not-server #(when-not (:server opts)   %)})
+
+(def opts
+  {:server   nil
+   :devcards nil
+   :all      #{:server :devcards}})
 
 (def files
   {:server          {"resources/config/defaults.edn"   "resources/config/defaults.edn"

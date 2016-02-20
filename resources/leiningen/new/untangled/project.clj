@@ -1,10 +1,10 @@
 (defproject {{name}} "0.1.0-SNAPSHOT"
   :description "Hello Om, from Untangled!"
 
-  :dependencies [[org.clojure/clojure "1.7.0" :scope "provided"]
-                 [org.clojure/clojurescript "1.7.170" :scope "provided"]
+  :dependencies [[org.clojure/clojure "1.7.0"]
+                 [org.clojure/clojurescript "1.7.228"]
 
-                 [org.omcljs/om "1.0.0-alpha31-SNAPSHOT"]
+                 [org.omcljs/om "1.0.0-alpha31-SNAPSHOT" :exclusions [commons-codec]]
                  [untangled-client "0.4.3-SNAPSHOT"]
                  [untangled-spec "0.3.3" :scope "test"]
 
@@ -18,10 +18,7 @@
 
   :plugins [[com.jakemccrary/lein-test-refresh "0.13.0"]]
 
-  :repositories [["releases"    "https://artifacts.buehner-fry.com/artifactory/navis-maven-release"]
-                 ["snapshot"    "https://artifacts.buehner-fry.com/artifactory/navis-maven-snapshot"]
-                 ["snapshot-2"  "https://artifacts.buehner-fry.com/artifactory/internal-snapshots"]
-                 ["third-party" "https://artifacts.buehner-fry.com/artifactory/internal-3rdparty"]]
+  :repositories [["releases" "https://artifacts.buehner-fry.com/artifactory/release"]]
 
   :deploy-repositories [["releases" {:id            "central"
                                      :url           "https://artifacts.buehner-fry.com/artifactory/navis-maven-release"
@@ -91,7 +88,7 @@
                                   [binaryage/devtools "0.5.2"]
 
                                   [com.cemerick/piggieback "0.2.1"]
-                                  [figwheel-sidecar "0.5.0-3" :exclusions [ring/ring-core joda-time org.clojure/tools.reader]]
+                                  [figwheel-sidecar "0.5.0-3" :exclusions [joda-time clj-time {{#when-server}}ring/ring-core{{/when-server}}]]
                                   [org.clojure/tools.nrepl "0.2.12"]
 
                                   {{#when-devcards}}
