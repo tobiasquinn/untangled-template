@@ -46,4 +46,4 @@
     (main/info "Generating an untangled project.")
     (main/info (str "With opts: " opts))
     (render-files opts (tmpl/make-data project-name opts))
-    (main/info "Done!")))
+    (main/info "Done! see README for info")))
