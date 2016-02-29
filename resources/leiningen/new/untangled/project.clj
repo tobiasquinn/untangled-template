@@ -5,8 +5,8 @@
                  [org.clojure/clojurescript "1.7.228"]
 
                  [org.omcljs/om "1.0.0-alpha31-SNAPSHOT" :exclusions [commons-codec]]
-                 [untangled-client "0.4.3-SNAPSHOT"]
-                 [untangled-spec "0.3.3" :scope "test"]
+                 [navis/untangled-client "0.4.3-SNAPSHOT"]
+                 [untangled-spec "0.3.4-SNAPSHOT" :scope "test"]
 
                  {{#when-server}}
                  [com.stuartsierra/component "0.3.0"]
