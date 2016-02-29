@@ -97,5 +97,4 @@
                                   {{/when-devcards}}
                                   ]
                    :repl-options {:init-ns user
-                                  :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
-                                  :port 7001}}})
+                                  :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}})
