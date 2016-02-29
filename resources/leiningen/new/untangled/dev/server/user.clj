@@ -45,5 +45,7 @@
 
 (defn go [] (init) (start))
 
+(defn engage [] (go) (start-figwheel))
+
 (defn reset [] (stop) (refresh :after 'user/go))
 {{/when-server}}
