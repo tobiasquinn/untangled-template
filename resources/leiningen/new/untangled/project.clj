@@ -18,7 +18,8 @@
 
   :plugins [[com.jakemccrary/lein-test-refresh "0.14.0"]]
 
-  :repositories [["releases" "https://artifacts.buehner-fry.com/artifactory/release"]]
+  :repositories [["releases" {:url "https://artifacts.buehner-fry.com/artifactory/release"
+                              :update :always}]]
 
   :deploy-repositories [["releases" {:id            "central"
                                      :url           "https://artifacts.buehner-fry.com/artifactory/navis-maven-release"
