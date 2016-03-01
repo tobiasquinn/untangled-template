@@ -45,7 +45,9 @@
 
 (defn go [] (init) (start))
 
-(defn engage [] (go) (start-figwheel))
+(defn engage
+  ([] (go) (start-figwheel))
+  ([build-ids] (go) (start-figwheel build-ids)))
 
 (defn reset [] (stop) (refresh :after 'user/go))
 {{/when-server}}
