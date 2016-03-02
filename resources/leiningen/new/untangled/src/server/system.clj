@@ -1,6 +1,5 @@
 (ns {{name}}.system
   (:require
-    [com.navis.common.components.authorization :refer [build-authorizer]]
     [untangled.server.core :as core]
     [untangled.datomic.core :refer [build-database]]
     [om.next.server :as om]
