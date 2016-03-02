@@ -7,6 +7,10 @@
     [clojure.stacktrace :refer [print-stack-trace]]
     [clojure.java.io :as io]
 
+    {{#when-datomic}}
+    [datomic.api :as d]
+    {{/when-datomic}}
+
     {{#when-server}}
     [taoensso.timbre :as timbre]
     [clojure.tools.namespace.repl :refer [refresh set-refresh-dirs]]

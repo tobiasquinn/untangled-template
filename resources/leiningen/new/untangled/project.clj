@@ -5,15 +5,16 @@
                  [org.clojure/clojurescript "1.7.228"]
 
                  [org.omcljs/om "1.0.0-alpha31-SNAPSHOT" :exclusions [commons-codec]]
-                 [navis/untangled-client "0.4.3-SNAPSHOT"]
+                 [navis/untangled-client "0.4.4-SNAPSHOT"]
                  [untangled-spec "0.3.4-SNAPSHOT" :scope "test"]
 
                  {{#when-server}}
                  [com.stuartsierra/component "0.3.0"]
                  [com.taoensso/timbre "4.1.4"]
 
-                 [navis/untangled-datomic "0.4.2-SNAPSHOT"]
-                 [navis/untangled-server "0.4.3-SNAPSHOT"]
+                 [navis/untangled-datomic "0.4.4-SNAPSHOT"]
+                 [navis/untangled-server "0.4.5-SNAPSHOT"]
+                 [com.navis/common "0.1.21"]
                  {{/when-server}}]
 
   :plugins [[com.jakemccrary/lein-test-refresh "0.14.0"]]

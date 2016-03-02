@@ -9,8 +9,18 @@
     [clojure.string :refer [replace-first]]
     [clojure.java.io :as io]))
 
-(defn render-files [opts data]
-  (let [render #((template/renderer "untangled") % data)
+(defn make-dflt-lambdas [all opts]
+  (->> all
+       (mapv (fn [opt]
+               {(keyword (str "when-"     (name opt))) #(when     (get opts opt) %)
+                (keyword (str "when-not-" (name opt))) #(when-not (get opts opt) %)}))
+       (apply merge)))
+
+(defn render-files [opts vars]
+  (let [data (merge (make-dflt-lambdas tmpl/all opts)
+                    vars)
+        render #(try ((template/renderer "untangled") % data)
+                     (catch Exception e (println "Failed at" %) (throw e)))
         tmpl (fn [files-map]
                (mapv (fn [[from to]]
                        (vector to (render from)))
@@ -26,19 +36,20 @@
 
 (defn parse-args [args]
   (letfn [(parse [args]
-                 (reduce #(->> %2 read-string (conj %1)) #{} args))
-          (validate [opts args]
-                    (let [diff (set/difference args (set (keys opts)))]
-                      (assert (empty? diff) (str "invalid args: " diff)))
-                    args)
+            (reduce #(->> %2 read-string (conj %1)) #{} args))
+          (validate [all args]
+            (let [diff (set/difference args all)]
+              (assert (empty? diff) (str "invalid args: " diff)))
+            args)
           (expand [arg->opts args]
-                  (->> args
-                       (mapcat #(if-let [xs (arg->opts %)] xs [%]))
-                       set
-                       (reduce #(assoc %1 %2 true) {})))]
-    (->> (parse args)
-         (validate tmpl/opts)
-         (expand tmpl/opts))))
+            (->> args
+                 (mapcat #(if-let [xs (arg->opts %)] xs [%]))
+                 set
+                 (reduce #(assoc %1 %2 true) {})))]
+    (->> args
+      (parse)
+      (validate (set/union tmpl/all (set (keys tmpl/opts))))
+      (expand tmpl/opts))))
 
 (defn untangled
   [project-name & args]

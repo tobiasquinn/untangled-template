@@ -22,5 +22,7 @@
     (core/make-untangled-server
       :config-path config-path
       :parser (om/parser {:read r/api-read :mutate logging-mutate})
-      :parser-injections #{}
-      :components {})))
+      :parser-injections #{:config :{{name}}-database}
+      :components { {{#when-datomic}}
+                   :{{name}}-database (build-database :{{name}})
+                   {{/when-datomic}} })))
