@@ -5,32 +5,22 @@
                  [org.clojure/clojurescript "1.7.228"]
 
                  [org.omcljs/om "1.0.0-alpha31-SNAPSHOT" :exclusions [commons-codec]]
-                 [navis/untangled-client "0.4.4-SNAPSHOT"]
-                 [untangled-spec "0.3.4-SNAPSHOT" :scope "test"]
+                 [navis/untangled-client "0.4.5"]
+                 [navis/untangled-spec "0.3.5" :scope "test"]
 
                  {{#when-server}}
                  [com.stuartsierra/component "0.3.0"]
                  [com.taoensso/timbre "4.1.4"]
 
-                 [navis/untangled-datomic "0.4.4-SNAPSHOT"]
-                 [navis/untangled-server "0.4.5-SNAPSHOT"]
-                 [com.navis/common "0.1.21"]
+                 [navis/untangled-datomic "0.4.4"]
+                 [navis/untangled-server "0.4.5"]
                  {{/when-server}}]
 
   :plugins [[com.jakemccrary/lein-test-refresh "0.14.0"]]
 
-  :repositories [["releases" {:url "https://artifacts.buehner-fry.com/artifactory/release"
-                              :update :always}]]
-
-  :deploy-repositories [["releases" {:id            "central"
-                                     :url           "https://artifacts.buehner-fry.com/artifactory/navis-maven-release"
-                                     :snapshots     false
-                                     :sign-releases false}]
-                        ["snapshots" {:id            "snapshots"
-                                      :url           "https://artifacts.buehner-fry.com/artifactory/navis-maven-snapshots"
-                                      :sign-releases false}]]
-
-  :test-refresh {:report untangled-spec.reporters.terminal/untangled-report}
+  :test-refresh {:report untangled-spec.reporters.terminal/untangled-report
+                 :with-repl true
+                 :changes-only true}
   {{#when-server}}
 
   :source-paths ["src/server"]
@@ -90,7 +80,7 @@
                                   [binaryage/devtools "0.5.2"]
 
                                   [com.cemerick/piggieback "0.2.1"]
-                                  [figwheel-sidecar "0.5.0-3" :exclusions [joda-time clj-time {{#when-server}}ring/ring-core{{/when-server}}]]
+                                  [figwheel-sidecar "0.5.0-6" :exclusions [joda-time clj-time {{#when-server}}ring/ring-core{{/when-server}}]]
                                   [org.clojure/tools.nrepl "0.2.12"]
 
                                   {{#when-devcards}}
