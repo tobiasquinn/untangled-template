@@ -1,3 +1,3 @@
 (ns {{name}}.initial-state)
 
-(def initial-state {:react-key "GROOT"})
+(def initial-state {:ui/react-key "GROOT"})
