@@ -27,7 +27,7 @@
   :jvm-opts ["-server" "-Xmx1024m" "-Xms512m" "-XX:-OmitStackTraceInFastThrow"]
 
   {{/when-server}}
-  :test-paths ["specs" {{#when-server}}"specs/server" {{/when-server}}]
+  :test-paths ["specs" {{#when-server}}"specs/server" "specs/config"{{/when-server}}]
   :clean-targets ^{:protect false} [{{#when-server}}"target"{{/when-server}} "resources/public/js/compiled"]
 
   :figwheel {:css-dirs ["resources/public/css"]}
