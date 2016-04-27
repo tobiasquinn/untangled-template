@@ -1,5 +1,7 @@
 # untangled
 
+**IMPORTANT: NOT READY FOR USE. Clone TodoMVC from github as a template instead**
+
 A Leiningen template for Untangled.
 
 ## Usage
