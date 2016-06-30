@@ -1,4 +1,4 @@
-(defproject untangled/lein-template "0.4.0-SNAPSHOT"
+(defproject untangled/lein-template "0.4.0"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :dependencies [[org.clojure/clojure "1.8.0"]
