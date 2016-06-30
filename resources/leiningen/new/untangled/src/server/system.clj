@@ -1,28 +1,23 @@
 (ns {{name}}.system
   (:require
     [untangled.server.core :as core]
-    [untangled.datomic.core :refer [build-database]]
+    {{#when-datomic}}[untangled.datomic.core :as udc]{{/when-datomic}}
     [om.next.server :as om]
     [{{name}}.api.read :as r]
-    [{{name}}.api.mutations :as mut] ;; DO NOT DELETE, loads mutations
+    [{{name}}.api.mutations :as mut]
 
     [taoensso.timbre :as timbre]))
 
-;; IMPORTANT: Remember to load all multi-method namespaces to ensure all of the methods are defined in your parser!
-
 (defn logging-mutate [env k params]
-  ; NOTE: Params can be a security/pci concern, so don't log them here.
-  ; TODO: Include user info from env in logs.
-  (timbre/info "Mutation Request: " k)
+  (timbre/info "Entering mutation:" k)
   (mut/apimutate env k params))
 
-(defn make-system []
-  (let [config-path "/usr/local/etc/{{sanitized}}.edn"]
-    (prn :make-system/config-path config-path)
-    (core/make-untangled-server
-      :config-path config-path
-      :parser (om/parser {:read r/api-read :mutate logging-mutate})
-      :parser-injections #{:config :{{name}}-database}
-      :components { {{#when-datomic}}
-                   :{{name}}-database (build-database :{{name}})
-                   {{/when-datomic}} })))
+(defn make-system [config-path]
+  (core/make-untangled-server
+    :config-path config-path
+    :parser (om/parser {:read r/api-read :mutate logging-mutate})
+    :parser-injections #{:config {{#when-datomic}}:{{name}}-database{{/when-datomic}}}
+    :components { {{#when-datomic}}
+                 :{{name}}-database (udc/build-database :{{name}})
+                 :logger {}
+                 {{/when-datomic}} }))
