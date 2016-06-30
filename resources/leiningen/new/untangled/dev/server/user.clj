@@ -13,7 +13,7 @@
 
     {{#when-server}}
     [taoensso.timbre :as timbre]
-    [clojure.tools.namespace.repl :refer [refresh set-refresh-dirs]]
+    [clojure.tools.namespace.repl :as tools-ns :refer [set-refresh-dirs]]
     [com.stuartsierra.component :as component]
     [{{name}}.system :as sys]{{/when-server}}))
 
@@ -38,20 +38,44 @@
      (ra/cljs-repl))))
 {{#when-server}}
 ;; ==================== SERVER ====================
+
 (set-refresh-dirs "dev/server" "src/server" "specs/server")
 
+(defn started? [sys]
+  (-> sys :config :value))
+
 (defonce system (atom nil))
+(def cfg-paths {:dev "config/dev.edn"})
 
-(defn init [] (reset! system (sys/make-system)))
+(defn refresh [& args]
+  {:pre [(not @system)]}
+  (apply tools-ns/refresh args))
 
-(defn start [] (swap! system component/start))
-(defn stop [] (swap! system component/stop) (reset! system nil))
+(defn init [path]
+  {:pre [(not (started? @system))
+         (get cfg-paths path)]}
+  (when-let [new-system (sys/make-system (get cfg-paths path))]
+    (reset! system new-system)))
 
-(defn go [] (init) (start))
+(defn start []
+  {:pre [@system (not (started? @system))]}
+  (swap! system component/start))
 
-(defn engage
-  ([] (go) (start-figwheel))
-  ([build-ids] (go) (start-figwheel build-ids)))
+(defn stop []
+  (when (started? @system)
+    (swap! system component/stop))
+  (reset! system nil))
 
-(defn reset [] (stop) (refresh :after 'user/go))
+(defn go
+  ([] (go :dev))
+  ([path] {:pre [(not @system) (not (started? @system))]}
+   (init path)
+   (start)))
+
+(defn reset []
+  (stop)
+  (refresh :after 'user/go))
+
+(defn engage [path & build-ids]
+  (stop) (go path) (start-figwheel build-ids))
 {{/when-server}}
