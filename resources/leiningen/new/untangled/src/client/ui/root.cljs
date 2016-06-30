@@ -6,10 +6,10 @@
 
 (defui ^:once Root
   static om/IQuery
-  (query [this] [:react-key])
+  (query [this] [:ui/react-key])
 
   Object
   (render [this]
-    (let [{:keys [react-key] :or {react-key "ROOT"}} (om/props this)]
+    (let [{:keys [ui/react-key] :or {ui/react-key "ROOT"}} (om/props this)]
       (dom/div #js {:key react-key}
                "Hello World!"))))

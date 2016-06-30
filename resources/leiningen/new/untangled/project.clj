@@ -18,25 +18,16 @@
 
   :plugins [[com.jakemccrary/lein-test-refresh "0.15.0"]]
 
-  :repositories [["releases" {:url "https://artifacts.buehner-fry.com/artifactory/release"
-                              :update :always}]]
-
-  :deploy-repositories [["releases" {:id            "central"
-                                     :url           "https://artifacts.buehner-fry.com/artifactory/navis-maven-release"
-                                     :snapshots     false
-                                     :sign-releases false}]
-                        ["snapshots" {:id            "snapshots"
-                                      :url           "https://artifacts.buehner-fry.com/artifactory/navis-maven-snapshots"
-                                      :sign-releases false}]]
-
-  :test-refresh {:report untangled-spec.reporters.terminal/untangled-report}
+  :test-refresh {:report untangled-spec.reporters.terminal/untangled-report
+                 :with-repl true
+                 :changes-only true}
   {{#when-server}}
 
   :source-paths ["src/server"]
   :jvm-opts ["-server" "-Xmx1024m" "-Xms512m" "-XX:-OmitStackTraceInFastThrow"]
 
   {{/when-server}}
-  :test-paths ["specs" {{#when-server}}"specs/server" {{/when-server}}]
+  :test-paths ["specs" {{#when-server}}"specs/server" "specs/config"{{/when-server}}]
   :clean-targets ^{:protect false} [{{#when-server}}"target"{{/when-server}} "resources/public/js/compiled"]
 
   :figwheel {:css-dirs ["resources/public/css"]}
