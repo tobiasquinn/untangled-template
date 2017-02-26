@@ -15,7 +15,7 @@
                  [org.clojure/core.async "0.2.395"]
                  [http-kit "2.2.0"]
                  [com.taoensso/timbre "4.7.4"]
-                 [navis/untangled-server "0.6.2"]]
+                 [navis/untangled-server "0.7.0"]]
 
   :plugins [[lein-cljsbuild "1.1.5"]
             [lein-doo "0.1.7"]
