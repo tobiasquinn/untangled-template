@@ -5,6 +5,9 @@
             [om-css.core :as css :refer-macros [localize-classnames]]
             [untangled.client.mutations :as m]))
 
+(defmethod m/mutate 'test/out [_ _ {:keys [output]}]
+  {:action (fn [] (println output))})
+
 (defui ^:once MainPage
   static u/InitialAppState
   (initial-state [this params] {:id :main})
@@ -18,6 +21,15 @@
   (render [this]
     (localize-classnames MainPage
       (let [{:keys [current-user]} (om/props this)]
-        (dom/div #js {:class :form} "MAIN PAGE")))))
+        (dom/div #js {:class :form} "MAIN PAGE")
+        (dom/button #js {:onClick #(om/transact! this `[(untangled/load {:query [:any1]
+                                                                         :post-mutation test/out
+                                                                         :post-mutation-params {:output 1}})
+                                                        (untangled/load {:query [:any2]
+                                                                         :post-mutation test/out
+                                                                         :post-mutation-params {:output 2}})
+                                                        (untangled/load {:query [:any3]
+                                                                         :post-mutation test/out
+                                                                         :post-mutation-params {:output 3}})])} "TEST")))))
 
 (def ui-main (om/factory MainPage))
